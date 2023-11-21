@@ -13,6 +13,7 @@ import java.awt.event.*;
 import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 
 public class BookFrame {
     private JButton removeButton;
@@ -199,9 +200,24 @@ public class BookFrame {
         priceField.setText(String.valueOf(detailBookModel.getSellPricing()));
         insbField.setText(detailBookModel.getInsbCode());
         spinnerYearPublisher.setValue(detailBookModel.getYearPublish());
-        cbAuthors.setSelectedIndex(detailBookModel.getAuthorModel().getId());
-        cbPublisher.setSelectedIndex(detailBookModel.getPublisher().id);
-        cbGenre.setSelectedIndex(detailBookModel.getGenre().id);
+        for (int i = 0; i < authors.size(); i++) {
+            if(authors.get(i).getId().equals(detailBookModel.getAuthorModel().getId())){
+                cbAuthors.setSelectedIndex(i);
+                break;
+            }
+        }
+        for (int i = 0; i < publishers.size(); i++) {
+            if(publishers.get(i).id == detailBookModel.getPublisher().id){
+                cbPublisher.setSelectedIndex(i);
+                break;
+            }
+        }
+        for (int i = 0; i < genres.size(); i++) {
+            if(genres.get(i).id == detailBookModel.getGenre().id){
+                cbGenre.setSelectedIndex(i);
+                break;
+            }
+        }
     }
 
     ///TODO: CLEAR
@@ -314,15 +330,19 @@ public class BookFrame {
             return;
         }
         if (isErrorField(insb,nameField.getText())) return;
-            String title = jTextTitle.getText();
+
+        String title = jTextTitle.getText();
             String price = priceField.getText().isEmpty()? "0": priceField.getText().replace(",","");
 
             BookModel editBook = new BookModel(
                    nameField.getText(),
                     insb, title,
-                    year,publisher,
-                    Integer.parseInt(price),
-                    Integer.parseInt(spinnerYearPublisher.getValue().toString())
+                    Integer.parseInt(year),
+                    publisherSelected.id,
+                    genreSelected.id,
+                    authorSelected.getId(),
+                    controller.bookSelected.getIDBook(),
+                    Integer.parseInt(price)
             );
             boolean isSuccess = controller.editBook(editBook);
             if(isSuccess){

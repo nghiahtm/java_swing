@@ -20,19 +20,8 @@ public class BookUseCase implements IBook {
     }
 
     @Override
-    public boolean editBook(DetailBookModel book) {
-        BookModel bookEdited = new BookModel(
-                book.getName(),
-                book.getInsbCode(),
-                book.getBookTitle(),
-                book.getYearPublish(),
-                book.getPublisher().id,
-                book.getGenre().id,
-                book.getAuthorModel().getId(),
-                book.getIDBook(),
-                book.getSellPricing()
-        );
-       return db.isEditSuccess(bookEdited);
+    public boolean editBook(BookModel book) {
+       return db.isEditSuccess(book);
     }
 
     @Override

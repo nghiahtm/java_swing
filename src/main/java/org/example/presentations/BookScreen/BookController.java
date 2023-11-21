@@ -40,9 +40,8 @@ public class BookController {
     public boolean addBook(BookModel book) {
         return bookUseCase.isSuccessAddBook(book);
     }
-    public boolean editBook(DetailBookModel newBook) {
-        bookSelected = newBook;
-        return bookUseCase.editBook(bookSelected);
+    public boolean editBook(BookModel newBook) {
+        return bookUseCase.editBook(newBook);
     }
 
     public boolean removeBook(int id) {

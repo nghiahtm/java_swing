@@ -56,7 +56,7 @@ public class BookDB {
     }
     public boolean isRemoveBook(int id) {
         String sqlUser =
-                "DELETE FROM books WHERE id='"+id+"'";
+                "DELETE FROM books WHERE id_book='"+id+"'";
         try {
             ResultDataCommon.executeUpdateData(sqlUser);
             return  true;
@@ -74,10 +74,10 @@ public class BookDB {
                         "name='"+ bookModel.name+"',"+
                         "id_publisher='"+ bookModel.idPublisher+"',"+
                         "selling_price='"+ bookModel.sellingPrice+"',"+
-                        "publish_year='"+ bookModel.publishYear+"'"+
-                        "id_author='"+ bookModel.idAuthor+"'"+
+                        "publish_year='"+ bookModel.publishYear+"',"+
+                        "id_author='"+ bookModel.idAuthor+"',"+
                         "id_genre='"+ bookModel.idGenre+"'"+
-                        "WHERE id='"+ bookModel.idBook+"'";
+                        "WHERE id_book='"+ bookModel.idBook+"'";
         try {
             System.out.println("success");
             ResultDataCommon.executeUpdateData(sqlUser);
