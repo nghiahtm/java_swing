@@ -6,9 +6,9 @@ import java.sql.ResultSet;
 public class DetailBookModel {
     private final String name;
     private final String bookTitle;
-    private final String publisher;
+    private final PublisherModel publisher;
     private final AuthorModel authorModel;
-    private final String genre;
+    private final GenreModel genre;
     private final int sellPricing;
     private final int yearPublish;
     private final Integer idBook;
@@ -25,21 +25,19 @@ public class DetailBookModel {
     public String getInsbCode() {
         return insbCode;
     }
-    public String getPublisher() {
+    public PublisherModel getPublisher() {
         return publisher;
     }
 
     public AuthorModel getAuthorModel() {
-        return new AuthorModel(
-                0,""
-        );
+        return authorModel;
     }
 
     public int getSellPricing() {
         return sellPricing;
     }
 
-    public String getGenre() {
+    public GenreModel getGenre() {
         return genre;
     }
 
@@ -59,9 +57,9 @@ public class DetailBookModel {
                      String name, String title,
                      int sellPricing,
                      String insbCode,
-                     String publisher,
+                     PublisherModel publisher,
                      int yearPublish,
-                    String genre,
+                    GenreModel genre,
                       AuthorModel authorModel,
                      int idBook) {
         this.name = name;
@@ -82,11 +80,18 @@ public class DetailBookModel {
         String title = ConnectionString.parseStringMySQL(rs,"book_title");
         //TODO: SET Author
         String authorName = ConnectionString.parseStringMySQL(rs,"author_name");
-        Integer id = ConnectionString.parseIntMySQL(rs,"id_author");
-        AuthorModel authorData =new AuthorModel(id,authorName);
+        Integer idAuthor = ConnectionString.parseIntMySQL(rs,"id_author");
+        AuthorModel authorData =new AuthorModel(idAuthor,authorName);
+        ///TODO: set genre
         String genre = ConnectionString.parseStringMySQL(rs,"genre");
+        int idGenre = ConnectionString.parseIntMySQL(rs,"id_genre");
+        GenreModel genreData = new GenreModel(idGenre,genre);
         String insbCode = ConnectionString.parseStringMySQL(rs,"insb_code");
+        ///TODO:set publisher
         String publisher = ConnectionString.parseStringMySQL(rs,"publisher");
+        int idPublisher = ConnectionString.parseIntMySQL(rs,"id_publisher");
+
+        PublisherModel publisherData = new PublisherModel(idPublisher,publisher);
         int sellPrice = ConnectionString.parseIntMySQL(rs,"selling_price");
         int publishYear = ConnectionString.parseIntMySQL(rs,"publish_year");
         return new DetailBookModel(
@@ -94,9 +99,9 @@ public class DetailBookModel {
                 title,
                 sellPrice,
                 insbCode,
-                publisher,
+                publisherData,
                 publishYear,
-                genre,
+                genreData,
                 authorData,
                 idBook);
     }

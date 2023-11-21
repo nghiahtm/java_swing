@@ -42,6 +42,7 @@ public class BookFrame {
     private List<DetailBookModel> books;
     private List<AuthorModel> authors;
     private List<PublisherModel> publishers;
+    private List<GenreModel> genres;
     private PublisherModel publisherSelected = new PublisherModel(0,"");
     private GenreModel genreSelected = new GenreModel(0,"");
     private AuthorModel authorSelected = new AuthorModel(0,"","","");
@@ -50,18 +51,7 @@ public class BookFrame {
         controller = new BookController();
         initState();
         btnDeleteAll.addActionListener(e -> removeAll());
-        btnAuthor.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new AuthorScreen().setVisible(true);
-            }
-        });
-        scanINSBButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        });
+        btnAuthor.addActionListener(e -> new AuthorScreen().setVisible(true));
     }
 
     private void initState(){
@@ -104,7 +94,8 @@ public class BookFrame {
         }
         );
 
-        for (GenreModel genre:controller.getGenres()) {
+        genres = controller.getGenres();
+        for (GenreModel genre: genres) {
             cbGenre.addItem(genre.name);
         }
         cbGenre.addItemListener(event -> {
@@ -162,10 +153,10 @@ public class BookFrame {
         indexSelected = index;
     }
 
-    ///TODO: RESET DATA
+    ///TODO: Set up Table
     private void setTableData(){
         DefaultTableModel model = new DefaultTableModel() {
-            final String[] headerBook = {"INSB Code","Book Name", "Author Name","Publisher","Title","Selling Price","Publisher Year"};
+            final String[] headerBook = {"INSB Code","Book Name","Author Name","Publisher","Genre","Title","Selling Price","Publisher Year"};
 
             @Override
             public int getColumnCount() {
@@ -183,11 +174,13 @@ public class BookFrame {
         };
         books = controller.getBooks();
         for (final DetailBookModel detailBookModel : books) {
+
             model.addRow(new Object[]{
                     detailBookModel.getInsbCode(),
                     detailBookModel.getName(),
-                    detailBookModel.getAuthorModel().getName(),
-                    detailBookModel.getPublisher(),
+                    detailBookModel.getAuthorModel().getId() == 0?"":detailBookModel.getAuthorModel().getName(),
+                    detailBookModel.getPublisher().id == 0?"":detailBookModel.getPublisher().name,
+                    detailBookModel.getGenre().id == 0?"":detailBookModel.getGenre().name,
                     detailBookModel.getBookTitle(),
                     detailBookModel.getSellPricing(),
                     detailBookModel.getYearPublish(),
@@ -197,6 +190,7 @@ public class BookFrame {
         tableBook.setModel(model);
     }
 
+    //TODO: Set State field
     private void setStateField (){
         DetailBookModel detailBookModel = controller.bookSelected;
         nameField.setText(detailBookModel.getName());
@@ -205,6 +199,9 @@ public class BookFrame {
         priceField.setText(String.valueOf(detailBookModel.getSellPricing()));
         insbField.setText(detailBookModel.getInsbCode());
         spinnerYearPublisher.setValue(detailBookModel.getYearPublish());
+        cbAuthors.setSelectedIndex(detailBookModel.getAuthorModel().getId());
+        cbPublisher.setSelectedIndex(detailBookModel.getPublisher().id);
+        cbGenre.setSelectedIndex(detailBookModel.getGenre().id);
     }
 
     ///TODO: CLEAR
@@ -245,11 +242,10 @@ public class BookFrame {
 
     private int warningDialog(String message) {
         int confirm;
-        Object[] options = { "Xác nhận", "Huỷ" };
-        int answer = JOptionPane.showOptionDialog(null, message, "Cảnh báo",
+        Object[] options = { "Confirm", "Cancel" };
+        int answer = JOptionPane.showOptionDialog(null, message, "Alert",
                 JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
                 null, options, options[0]);
-        System.out.println(answer);
         switch (answer) {
             case 0:
                 confirm = 0;
@@ -270,19 +266,8 @@ public class BookFrame {
             JOptionPane.showMessageDialog(bookPanel, StringConstants.idAlive);
             return;
         }
-        if (nameField.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(bookPanel, StringConstants.nameBookEmpty);
-            return;
-        }
-        if (insb.length()!=13) {
-            JOptionPane.showMessageDialog(bookPanel, StringConstants.insbEmpty);
-            return;
-        }
-        if(controller.isINSBExist(insb)){
-            JOptionPane.showMessageDialog(bookPanel, StringConstants.insbExist);
-            return;
-        }
-            String title = jTextTitle.getText();
+        if (isErrorField(insb,nameField.getText())) return;
+        String title = jTextTitle.getText();
             String price = priceField.getText().isEmpty()? "0": priceField.getText().replace(",","");
 
             BookModel newBook = new BookModel(
@@ -303,25 +288,47 @@ public class BookFrame {
           }
 
     }
+
+    private boolean isErrorField(String insb,String name) {
+        if (name.isEmpty()) {
+            JOptionPane.showMessageDialog(bookPanel, StringConstants.nameBookEmpty);
+            return true;
+        }
+        if (insb.length()!=13) {
+            JOptionPane.showMessageDialog(bookPanel, StringConstants.insbEmpty);
+            return true;
+        }
+        if(controller.isINSBExist(insb)){
+            JOptionPane.showMessageDialog(bookPanel, StringConstants.insbExist);
+            return true;
+        }
+        return false;
+    }
+
     ///TODO:EDIT
     private void editBook(){
-//        if(indexSelected == null){
-//            JOptionPane.showMessageDialog(bookPanel, StringConstants.idEmpty);
-//        }else{
-//            String title = jTextTitle.getText();
-//            String price = priceField.getText().isEmpty()? "0": priceField.getText().replace(",","");
-//            String publisher = publisherField.getText().replace(",","");
-//            BookModel editBook = new BookModel(
-//                    controller.bookSelected.getId(),nameField.getText(), title,null,publisher,
-//                    Integer.parseInt(price),
-//                    Integer.parseInt(spinnerYearPublisher.getValue().toString())
-//            );
-//            boolean isSuccess = controller.editBook(editBook);
-//            if(isSuccess){
-//                setTableData();
-//                clearText();
-//            }
-//        }
+        String year = String.valueOf(spinnerYearPublisher.getValue());
+        String insb = insbField.getText();
+        if(indexSelected == null){
+            JOptionPane.showMessageDialog(bookPanel, StringConstants.idEmpty);
+            return;
+        }
+        if (isErrorField(insb,nameField.getText())) return;
+            String title = jTextTitle.getText();
+            String price = priceField.getText().isEmpty()? "0": priceField.getText().replace(",","");
+
+            BookModel editBook = new BookModel(
+                   nameField.getText(),
+                    insb, title,
+                    year,publisher,
+                    Integer.parseInt(price),
+                    Integer.parseInt(spinnerYearPublisher.getValue().toString())
+            );
+            boolean isSuccess = controller.editBook(editBook);
+            if(isSuccess){
+                setTableData();
+                clearText();
+            }
     }
 
     ///TODO:REMOVE ALL

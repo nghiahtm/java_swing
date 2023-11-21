@@ -66,16 +66,18 @@ public class BookDB {
         return false;
     }
 
-    public boolean isEditSuccess(DetailBookModel detailBookModel) {
+    public boolean isEditSuccess(BookModel bookModel) {
         String sqlUser =
                 "UPDATE books " +
                         "SET " +
-                        "title='"+ detailBookModel.getBookTitle()+"',"+
-                        "name='"+ detailBookModel.getName()+"',"+
-                        "publisher='"+ detailBookModel.getPublisher()+"',"+
-                        "selling_price='"+ detailBookModel.getSellPricing()+"',"+
-                        "publish_year='"+ detailBookModel.getYearPublish()+"'"+
-                        "WHERE id='"+ detailBookModel.getIDBook()+"'";
+                        "title='"+ bookModel.title+"',"+
+                        "name='"+ bookModel.name+"',"+
+                        "id_publisher='"+ bookModel.idPublisher+"',"+
+                        "selling_price='"+ bookModel.sellingPrice+"',"+
+                        "publish_year='"+ bookModel.publishYear+"'"+
+                        "id_author='"+ bookModel.idAuthor+"'"+
+                        "id_genre='"+ bookModel.idGenre+"'"+
+                        "WHERE id='"+ bookModel.idBook+"'";
         try {
             System.out.println("success");
             ResultDataCommon.executeUpdateData(sqlUser);
