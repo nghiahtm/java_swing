@@ -9,8 +9,8 @@ import java.text.SimpleDateFormat;
 public class AuthorModel {
     final private Integer id;
     final private String name;
-    final private String dob;
-    final private String title;
+     private String dob;
+     private String title;
 
     public Integer getId() {
         return id;
@@ -33,6 +33,11 @@ public class AuthorModel {
         this.name = name;
         this.dob = dob;
         this.title = title;
+    }
+
+    public AuthorModel(Integer id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
     public static AuthorModel parseAuthor(ResultSet rs){

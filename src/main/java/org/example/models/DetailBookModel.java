@@ -7,7 +7,7 @@ public class DetailBookModel {
     private final String name;
     private final String bookTitle;
     private final String publisher;
-    private final String authorName;
+    private final AuthorModel authorModel;
     private final String genre;
     private final int sellPricing;
     private final int yearPublish;
@@ -29,8 +29,10 @@ public class DetailBookModel {
         return publisher;
     }
 
-    public String getAuthorName() {
-        return authorName;
+    public AuthorModel getAuthorModel() {
+        return new AuthorModel(
+                0,""
+        );
     }
 
     public int getSellPricing() {
@@ -60,7 +62,7 @@ public class DetailBookModel {
                      String publisher,
                      int yearPublish,
                     String genre,
-                      String authorName,
+                      AuthorModel authorModel,
                      int idBook) {
         this.name = name;
         this.bookTitle = title;
@@ -69,7 +71,7 @@ public class DetailBookModel {
         this.sellPricing = sellPricing;
         this.publisher = publisher;
         this.insbCode = insbCode;
-        this.authorName = authorName;
+        this.authorModel = authorModel;
         this.idBook = idBook;
     }
 
@@ -78,7 +80,10 @@ public class DetailBookModel {
         int idBook = ConnectionString.parseIntMySQL(rs,"id_book");
         String name = ConnectionString.parseStringMySQL(rs,"book_name");
         String title = ConnectionString.parseStringMySQL(rs,"book_title");
+        //TODO: SET Author
         String authorName = ConnectionString.parseStringMySQL(rs,"author_name");
+        Integer id = ConnectionString.parseIntMySQL(rs,"id_author");
+        AuthorModel authorData =new AuthorModel(id,authorName);
         String genre = ConnectionString.parseStringMySQL(rs,"genre");
         String insbCode = ConnectionString.parseStringMySQL(rs,"insb_code");
         String publisher = ConnectionString.parseStringMySQL(rs,"publisher");
@@ -92,7 +97,7 @@ public class DetailBookModel {
                 publisher,
                 publishYear,
                 genre,
-                authorName,
+                authorData,
                 idBook);
     }
 }

@@ -186,11 +186,11 @@ public class BookFrame {
             model.addRow(new Object[]{
                     detailBookModel.getInsbCode(),
                     detailBookModel.getName(),
-                    detailBookModel.getAuthorName(),
-                    detailBookModel.getYearPublish(),
+                    detailBookModel.getAuthorModel().getName(),
                     detailBookModel.getPublisher(),
                     detailBookModel.getBookTitle(),
-                    detailBookModel.getSellPricing()
+                    detailBookModel.getSellPricing(),
+                    detailBookModel.getYearPublish(),
             });
         }
         controller.books = books;
@@ -201,7 +201,6 @@ public class BookFrame {
         DetailBookModel detailBookModel = controller.bookSelected;
         nameField.setText(detailBookModel.getName());
         idBook.setText(String.valueOf(detailBookModel.getIDBook()));
-//        authorField.setText(bookModel.getAuthor() == null?"":bookModel.getAuthor());
         jTextTitle.setText(detailBookModel.getBookTitle());
         priceField.setText(String.valueOf(detailBookModel.getSellPricing()));
         insbField.setText(detailBookModel.getInsbCode());
