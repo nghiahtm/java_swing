@@ -12,5 +12,7 @@ public class StringConstants {
     public static  String questionDelete = "Do you want to delete this book?";
     public static  String questionAllDelete = "Do you want to delete all these books?";
 
-    public static  String idAuthorAlive = "Tác giả này đã tồn tại. Hãy tạo tác giả mới";
+    public static  String idAuthorNotEmpty = "Id Author is not empty";
+    public static  String idAuthorNotExist = "Id Author is not exist";
+    public static  String authorNameEmpty = "Name of Book is not empty";
 }

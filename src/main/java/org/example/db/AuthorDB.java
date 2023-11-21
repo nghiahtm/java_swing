@@ -45,19 +45,42 @@ public class AuthorDB {
         return false;
     }
 
-    public AuthorModel getAuthor(int id) {
-        String sqlUser = "SELECT * from authors where id_author='"+id+"'";
-        List<AuthorModel> authors = new ArrayList<>();
+    public boolean isUpdateAuthor(AuthorModel author) {
+        String sqlUser = "Update authors set " +
+                "name='"+ author.getName()+"',"+
+                "date='"+ author.getDob()+"',"+
+                "title='"+ author.getTitle()+"'"+
+                "where id_author='"+author.getId()+"'";
         try {
-            ResultSet rs = ResultDataCommon.getResult(sqlUser);
-            while (rs.next()){
-                AuthorModel author = AuthorModel.parseAuthor(rs);
-                authors.add(author);
-            }
-            return  authors.get(0);
+            ResultDataCommon.executeUpdateData(sqlUser);
+            return true;
+        }catch (SQLException exp){
+            System.out.println(exp);
+            return false;
+        }
+    }
+
+    public void isDeletedAuthor(int id) {
+        String sqlDelete = "Delete from authors where id_author='"+id+"'";
+        try {
+            ResultDataCommon.executeUpdateData(sqlDelete);
         }catch (SQLException exp){
             System.out.println(exp);
         }
-        return null;
+    }
+
+    public boolean isExistAuthorInBook(int id) {
+        String sqlDelete = "Select name from books where id_author='"+id+"'";
+        try {
+            ResultSet rs = ResultDataCommon.getResult(sqlDelete);
+            while (rs.next()){
+                System.out.println(rs.next());
+                return true;
+            }
+            return false;
+        }catch (SQLException exp){
+            System.out.println(exp);
+        }
+        return true;
     }
 }

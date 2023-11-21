@@ -23,12 +23,17 @@ public class AuthorUseCase implements IAuthor {
 
     @Override
     public boolean isSuccessEditAuthor(AuthorModel author) {
-        return false;
+        return db.isUpdateAuthor(author);
     }
 
     @Override
     public boolean isSuccessRemoveAuthor(int id) {
-        return false;
+        if(db.isExistAuthorInBook(id)){
+            return false;
+        }else{
+            db.isDeletedAuthor(id);
+        }
+        return true;
     }
 
     @Override

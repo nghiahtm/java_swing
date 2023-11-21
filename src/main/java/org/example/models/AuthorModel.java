@@ -7,8 +7,8 @@ import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 
 public class AuthorModel {
-    final private Integer id;
-    final private String name;
+     private Integer id;
+     private String name;
      private String dob;
      private String title;
 
@@ -39,6 +39,8 @@ public class AuthorModel {
         this.id = id;
         this.name = name;
     }
+
+    public AuthorModel(){}
 
     public static AuthorModel parseAuthor(ResultSet rs){
         int id = ConnectionString.parseIntMySQL(rs,"id_author");

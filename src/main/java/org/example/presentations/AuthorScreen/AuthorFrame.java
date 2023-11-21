@@ -11,7 +11,6 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.event.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -33,6 +32,7 @@ public class AuthorFrame{
     private List<AuthorModel> authors;
 
     private Integer indexSelected ;
+    private AuthorModel authorSelected = new AuthorModel() ;
     public AuthorFrame(){
        initState();
         tableAuthors.addMouseListener(new MouseAdapter() {
@@ -61,30 +61,11 @@ public class AuthorFrame{
             public void keyReleased(KeyEvent e) {
             }
         });
-        btnAdd.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                addAuthor();
-            }
-        });
-        btnEdit.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        });
-        btnRemove.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        });
-        btnRefresh.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                clearText();
-            }
-        });
+        ///TODO: SET BUTTON Listener
+        btnAdd.addActionListener(e -> addAuthor());
+        btnEdit.addActionListener(e -> editAuthor());
+        btnRemove.addActionListener(e -> deleteAuthor());
+        btnRefresh.addActionListener(e -> clearText());
     }
 
     private void initState () {
@@ -92,12 +73,13 @@ public class AuthorFrame{
         panelAuthor.setBorder(new EmptyBorder(10, 10, 10, 10));
         titleField.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         idAuthor.setEditable(false);
-        //Set date calendar
-        Date maxDate = new Date(120, Calendar.DECEMBER,31);
-        Date minDate = new Date(0, Calendar.DECEMBER,31);
+
+        //TODO: Set date calendar
+//        Date maxDate = new Date(120, Calendar.DECEMBER,31);
+//        Date minDate = new Date(0, Calendar.DECEMBER,31);
         dateChooser = new JDateChooser();
-        dateChooser.setLocale(new Locale("vi"));
         dateChooser.setDateFormatString(DateFormatConstant.dateVi);
+        dateChooser.setLocale(new Locale("vi"));
         fieldCalendar.add(dateChooser);
         setTableAuthors();
     }
@@ -109,18 +91,22 @@ public class AuthorFrame{
         String dob = dateDB.format(dateChooser.getDate());
         System.out.println(dob);
         AuthorModel authorModel = new AuthorModel(null,name,dob,title);
+        if(name.isEmpty()){
+            JOptionPane.showMessageDialog(panelAuthor, StringConstants.authorNameEmpty);
+            return;
+        }
         if(idAuthor.getText().isEmpty()){
             authorController.isSuccessAdd(authorModel);
             setTableAuthors();
             clearText();
         }else {
-            JOptionPane.showMessageDialog(panelAuthor, StringConstants.idAuthorAlive);
+            JOptionPane.showMessageDialog(panelAuthor, StringConstants.idAuthorNotExist);
         }
     }
 
     private void setTableAuthors(){
         DefaultTableModel model = new DefaultTableModel() {
-            final String[] headerAuthor = {"ID","Tên tác giả","Ngày sinh","Tiểu sử"};
+            final String[] headerAuthor = {"ID","Name Author","Date of birth","Story"};
 
             @Override
             public int getColumnCount() {
@@ -151,7 +137,7 @@ public class AuthorFrame{
 
     private void setStateField() {
         Date dateSelected;
-        AuthorModel authorSelected = authors.get(indexSelected);
+        authorSelected = authors.get(indexSelected);
         idAuthor.setText(authorSelected.getId().toString());
         nameField.setText(authorSelected.getName());
             try {
@@ -167,10 +153,49 @@ public class AuthorFrame{
         indexSelected = tableAuthors.getSelectedRow();
     }
 
+    private void editAuthor() {
+        String name = nameField.getText();
+        Integer id = authorSelected.getId();
+        if(id == null){
+            JOptionPane.showMessageDialog(panelAuthor, StringConstants.idAuthorNotEmpty);
+            return;
+        }
+        if(name.isEmpty()){
+            JOptionPane.showMessageDialog(panelAuthor, StringConstants.authorNameEmpty);
+            return;
+        }
+        SimpleDateFormat dateDB = new SimpleDateFormat(DateFormatConstant.dateDB);
+        String dob = dateDB.format(dateChooser.getDate());
+        AuthorModel authorEdit = new AuthorModel(
+                id,
+                name,
+                dob,
+                titleField.getText()
+        );
+        boolean isSuccess = authorController.isSuccessEdit(authorEdit);
+        if(isSuccess){
+            clearText();
+            setTableAuthors();
+        }
+    }
+    private void deleteAuthor(){
+        if(authorSelected.getId() == null){
+            JOptionPane.showMessageDialog(panelAuthor, StringConstants.idAuthorNotEmpty);
+            return;
+        }
+        boolean isSuccess = authorController.isRemoveAuthor(
+                authorSelected.getId()
+        );
+        if(!isSuccess){
+            JOptionPane.showMessageDialog(panelAuthor, StringConstants.authorNameEmpty);return;
+        }
+        clearText();
+        setTableAuthors();
+    }
     private void clearText() {
         idAuthor.setText("");
         nameField.setText("");
         titleField.setText("");
-        dateChooser.setDate(null);
+        dateChooser.setDate(new Date());
     }
 }

@@ -1,5 +1,6 @@
 package org.example.presentations;
 
+import org.example.presentations.AuthorScreen.AuthorFrame;
 import org.example.presentations.BookScreen.BookFrame;
 import javax.swing.*;
 
