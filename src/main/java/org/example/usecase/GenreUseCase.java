@@ -26,7 +26,12 @@ public class GenreUseCase implements IGenre {
 
     @Override
     public boolean isSuccessRemoveGenre(int id) {
-        return false;
+        boolean isExist = db.isExistInBookData(id);
+        if(isExist){
+            return false;
+        }
+        db.isSuccessRemove(id);
+        return true;
     }
 
     @Override

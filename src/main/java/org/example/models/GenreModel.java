@@ -5,7 +5,7 @@ import org.example.common.ConnectionString;
 import java.sql.ResultSet;
 
 public class GenreModel {
-    final public int id;
+    final public Integer id;
     final public String name;
 
     public GenreModel(int id, String name) {
