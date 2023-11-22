@@ -107,7 +107,7 @@ public class GenreForm {
             JOptionPane.showMessageDialog(genrePanel, StringConstants.idGenreExistInBook);
             return;
         }
-        setTableData();
+        reloadGenre();
     }
 
     private void editGenre(){
