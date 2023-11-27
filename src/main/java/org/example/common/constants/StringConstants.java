@@ -17,6 +17,7 @@ public class StringConstants {
     public static  String authorNameEmpty = "Name of Book is not empty";
 
     public static  String idGenreNotEmpty = "Id Genre is not empty";
+    public static  String genreNameEmpty = "Genre's Name is not empty";
     public static  String idGenreExistInBook = "Id Genre is existed in Book Table";
 
 }

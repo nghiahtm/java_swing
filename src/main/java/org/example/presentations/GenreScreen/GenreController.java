@@ -28,4 +28,11 @@ public class GenreController {
     public boolean isSuccessRemove(int id){
         return genreUseCase.isSuccessRemoveGenre(id);
     }
+    public boolean isSuccessAdd(GenreModel genreModel){
+        return genreUseCase.isSuccessAddGenre(genreModel);
+    }
+
+    public boolean isSuccessEdit(GenreModel genreModel){
+        return genreUseCase.isSuccessEditGenre(genreModel);
+    }
 }

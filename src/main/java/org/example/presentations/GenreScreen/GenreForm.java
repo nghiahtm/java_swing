@@ -7,8 +7,6 @@ import org.example.models.GenreModel;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
@@ -30,19 +28,10 @@ public class GenreForm {
     public GenreForm(){
         initState();
         reloadButton.addActionListener(e -> reloadGenre());
-        addButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        });
-        editButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        });
+        addButton.addActionListener(e -> addGenre());
+        editButton.addActionListener(e -> editGenre());
         removeButton.addActionListener(e -> removeGenre());
+        idField.setEditable(false);
     }
 
     private void initState(){
@@ -111,11 +100,52 @@ public class GenreForm {
     }
 
     private void editGenre(){
-
+        String name = genreField.getText();
+        if(idField.getText().isEmpty()){
+            JOptionPane.showMessageDialog(genrePanel, StringConstants.idGenreNotEmpty);
+            return;
+        }
+        if(name.isEmpty()){
+            JOptionPane.showMessageDialog(genrePanel, StringConstants.genreNameEmpty);
+            return;
+        }
+        int id = Integer.parseInt(idField.getText());
+        GenreModel genreEdit = new GenreModel(
+                id,
+                name
+        );
+        boolean isSuccess = controller.isSuccessEdit(
+                genreEdit
+        );
+        if(!isSuccess){
+                JOptionPane.showMessageDialog(genrePanel, StringConstants.connectError);
+                return;
+        }
+        reloadGenre();
     }
 
     private void addGenre(){
-
+        String name = genreField.getText();
+        if(!idField.getText().isEmpty()){
+            JOptionPane.showMessageDialog(genrePanel, StringConstants.idGenreExistInBook);
+            return;
+        }
+        if(name.isEmpty()){
+            JOptionPane.showMessageDialog(genrePanel, StringConstants.genreNameEmpty);
+            return;
+        }
+        GenreModel genreEdit = new GenreModel(
+                null,
+                name
+        );
+        boolean isSuccess = controller.isSuccessAdd(
+                genreEdit
+        );
+        if(!isSuccess){
+            JOptionPane.showMessageDialog(genrePanel, StringConstants.connectError);
+            return;
+        }
+        reloadGenre();
     }
 
     private void reloadGenre(){

@@ -1,6 +1,7 @@
 package org.example.db;
 
 import org.example.common.constants.ResultDataCommon;
+import org.example.models.AuthorModel;
 import org.example.models.GenreModel;
 
 import java.sql.ResultSet;
@@ -54,5 +55,32 @@ public class GenreDB {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public boolean isUpdateGenre(GenreModel genre) {
+        String sqlUser = "Update genres set " +
+                "name='"+ genre.name +"'"+
+                "where id_genre='"+genre.id+"'";
+        try {
+            ResultDataCommon.executeUpdateData(sqlUser);
+            return true;
+        }catch (SQLException exp){
+            System.out.println(exp);
+            return false;
+        }
+    }
+
+    public boolean isAddGenre(GenreModel genreModel) {
+        String sqlUser =
+                "Insert Into genres " +
+                        "(name) values ('"
+                        +genreModel.name+"')";
+        try {
+            ResultDataCommon.executeUpdateData(sqlUser);
+            return  true;
+        }catch (SQLException exp){
+            System.out.println(exp);
+        }
+        return false;
     }
 }

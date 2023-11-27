@@ -14,13 +14,14 @@ public class PublisherUseCase implements IPublisher {
         db = PublisherDB.getInstance();
     }
     @Override
-    public boolean isSuccessPublisher(PublisherModel publisher) {
-        return false;
+    public boolean isSuccessAddPublisher(PublisherModel publisher) {
+        return
+                db.isAddPublisher(publisher);
     }
 
     @Override
     public boolean isSuccessEditPublisher(PublisherModel publisher) {
-        return false;
+        return db.isUpdatePublisher(publisher);
     }
 
     @Override

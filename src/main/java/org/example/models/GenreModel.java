@@ -8,7 +8,7 @@ public class GenreModel {
     final public Integer id;
     final public String name;
 
-    public GenreModel(int id, String name) {
+    public GenreModel(Integer id, String name) {
         this.id = id;
         this.name = name;
     }

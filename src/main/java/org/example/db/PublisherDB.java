@@ -32,4 +32,31 @@ public class PublisherDB {
         }
         return null;
     }
+
+    public boolean isUpdatePublisher(PublisherModel publisher) {
+        String sqlUser = "Update publishers set " +
+                "name='"+ publisher.name +"'"+
+                "where id_genre='"+publisher.id+"'";
+        try {
+            ResultDataCommon.executeUpdateData(sqlUser);
+            return true;
+        }catch (SQLException exp){
+            System.out.println(exp);
+            return false;
+        }
+    }
+
+    public boolean isAddPublisher(PublisherModel publisher) {
+        String sqlUser =
+                "Insert Into publishers " +
+                        "(name) values ('"
+                        +publisher.name+"')";
+        try {
+            ResultDataCommon.executeUpdateData(sqlUser);
+            return  true;
+        }catch (SQLException exp){
+            System.out.println(exp);
+        }
+        return false;
+    }
 }

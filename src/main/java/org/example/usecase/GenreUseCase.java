@@ -15,13 +15,13 @@ public class GenreUseCase implements IGenre {
         db = GenreDB.getInstance();
     }
     @Override
-    public boolean isSuccessGenre(GenreModel genre) {
-        return false;
+    public boolean isSuccessAddGenre(GenreModel genre) {
+        return db.isAddGenre(genre);
     }
 
     @Override
     public boolean isSuccessEditGenre(GenreModel genre) {
-        return false;
+        return db.isUpdateGenre(genre);
     }
 
     @Override
