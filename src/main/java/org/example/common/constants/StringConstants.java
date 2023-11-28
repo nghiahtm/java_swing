@@ -5,7 +5,7 @@ public class StringConstants {
     public static  String idEmpty = "Please select the book you need to delete/edit";
     public static  String idAlive = "This code is already existed. Let's create books without code";
     public static  String nameBookEmpty = "Book name required";
-    public static  String insbEmpty = "Barcode required";
+    public static  String insbEmpty = "INSBcode required";
     public static  String insbExist = "Isnb is existed";
     public static  String connectError = "Kết nỗi DB lỗi";
     public static  String success= "Success";

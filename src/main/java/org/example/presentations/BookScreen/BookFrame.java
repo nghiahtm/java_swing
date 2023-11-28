@@ -103,16 +103,15 @@ public class BookFrame {
                 });
             }
         });
-        btnGenerator.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String isbn = generateISBN();
-                isbnField.setText(isbn);
-            }
+        btnGenerator.addActionListener(e -> {
+            String isbn = generateISBN();
+            isbnField.setText(isbn);
         });
     }
 
     private void initState(){
+        tableBook.setAutoCreateRowSorter(true);
+        isbnField.setEnabled(false);
         Calendar cal=Calendar.getInstance();
         int currentYear = cal.get(Calendar.YEAR);
         SpinnerModel modelSpinner =
@@ -279,8 +278,8 @@ public class BookFrame {
 
     ///TODO: CLEAR
     private void clearText(){
-        nameField.setText(null);
-        idBook.setText(null);
+        nameField.setText("");
+        idBook.setText("");
         cbAuthors.updateUI();
         cbAuthors.setSelectedIndex(0);
         cbGenre.updateUI();
@@ -293,7 +292,6 @@ public class BookFrame {
         spinnerYearPublisher.setValue(2023);
         fieldSearch.setText("");
         isbnField.setText(null);
-        isbnField.setEnabled(true);
         setTableData("");
     }
 
@@ -319,22 +317,21 @@ public class BookFrame {
 
     ///TODO: ADD
     private void addBook(){
-        String insb = isbnField.getText();
+        String isbn = isbnField.getText();
         String year = String.valueOf(spinnerYearPublisher.getValue());
         if(!idBook.getText().isEmpty()){
             JOptionPane.showMessageDialog(bookPanel, StringConstants.idAlive);
             return;
         }
-        if(insb.isEmpty()){
+        if(isbn.isEmpty()){
             JOptionPane.showMessageDialog(bookPanel, StringConstants.insbEmpty);
             return;
         }
-        if (isErrorField(insb,nameField.getText())) return;
+        if (isErrorField(isbn,nameField.getText())) return;
         String title = jTextTitle.getText();
             String price = priceField.getText().isEmpty()? "0": priceField.getText().replace(",","");
-
             BookModel newBook = new BookModel(
-                    nameField.getText(), insb,
+                    nameField.getText(), isbn,
                     title,
                     Integer.parseInt(year),
                     publisherSelected.id,
@@ -357,7 +354,7 @@ public class BookFrame {
             JOptionPane.showMessageDialog(bookPanel, StringConstants.nameBookEmpty);
             return true;
         }
-        if (isnb.length()!=10) {
+        if (isnb.length()!=13) {
             JOptionPane.showMessageDialog(bookPanel, StringConstants.insbEmpty);
             return true;
         }
