@@ -17,9 +17,15 @@ public class PublisherDB {
         return instance;
     }
 
-    public List<PublisherModel> getPublishers() {
+    public List<PublisherModel> getPublishers(String keyword) {
         List<PublisherModel> publishers = new ArrayList<>();
-        String sqlUser = "SELECT * from publishers";
+        String sqlUser = "";
+        if(keyword.isEmpty()){
+            sqlUser = "SELECT * from publishers";
+        }else{
+            sqlUser = "SELECT * FROM publishers WHERE name LIKE '%"+keyword+"%'";
+        }
+
         try {
             ResultSet rs = ResultDataCommon.getResult(sqlUser);
             while (rs.next()){
@@ -36,7 +42,7 @@ public class PublisherDB {
     public boolean isUpdatePublisher(PublisherModel publisher) {
         String sqlUser = "Update publishers set " +
                 "name='"+ publisher.name +"'"+
-                "where id_genre='"+publisher.id+"'";
+                "where id='"+publisher.id+"'";
         try {
             ResultDataCommon.executeUpdateData(sqlUser);
             return true;
@@ -58,5 +64,27 @@ public class PublisherDB {
             System.out.println(exp);
         }
         return false;
+    }
+
+    public boolean isDeletedPublisher(int id) {
+        String sqlDelete = "Delete from publishers where id='"+id+"'";
+        try {
+            ResultDataCommon.executeUpdateData(sqlDelete);
+            return true;
+        }catch (SQLException exp){
+            System.out.println(exp);
+        }
+        return true;
+    }
+
+    public boolean isExistPublisherInBook(int id) {
+        String sqlDelete = "Select name from books where id_publisher='"+id+"'";
+        try {
+            ResultSet rs = ResultDataCommon.getResult(sqlDelete);
+            return rs.next();
+        }catch (SQLException exp){
+            System.out.println(exp);
+        }
+        return true;
     }
 }

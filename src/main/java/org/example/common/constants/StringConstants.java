@@ -20,4 +20,11 @@ public class StringConstants {
     public static  String genreNameEmpty = "Genre's Name is not empty";
     public static  String idGenreExistInBook = "Id Genre is existed in Book Table";
 
+
+    public static  String questionPublisherDelete = "Do you want to delete these publishers?";
+    public static  String idPublisherNotEmpty = "Id Publisher is not empty";
+    public static  String idPublisherEmpty = "Id Publisher is existed";
+    public static  String publisherNameEmpty = "Name's Publisher is not empty";
+    public static  String idPublisherExistInBook = "Id Publisher is existed in Book Table";
+
 }

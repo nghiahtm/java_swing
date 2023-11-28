@@ -1,5 +1,6 @@
 package org.example.usecase;
 
+import org.example.common.constants.StringConstants;
 import org.example.db.PublisherDB;
 import org.example.interfaces.IPublisher;
 import org.example.models.PublisherModel;
@@ -25,12 +26,21 @@ public class PublisherUseCase implements IPublisher {
     }
 
     @Override
-    public boolean isSuccessRemovePublisher(int id) {
-        return false;
+    public String showNotificationRemove(int id) {
+        boolean isExisted = db.isExistPublisherInBook(id);
+        if(isExisted) {
+            return StringConstants.idPublisherExistInBook;
+        }
+        boolean isSuccessRemove = db.isDeletedPublisher(id);
+        if(!isSuccessRemove){
+            return StringConstants.connectError;
+        }
+        return StringConstants.success;
     }
 
+
     @Override
-    public List<PublisherModel> getPublishers() {
-         return new ArrayList<>(db.getPublishers());
+    public List<PublisherModel> getPublishers(String keyword) {
+         return new ArrayList<>(db.getPublishers(keyword));
     }
 }

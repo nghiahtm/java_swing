@@ -52,7 +52,7 @@ public class BookController {
     }
 
     public List<PublisherModel> getPublishers(){
-        return publisherUseCase.getPublishers();
+        return publisherUseCase.getPublishers("");
     }
     public List<GenreModel> getGenres(){
         return genreUseCase.getGenres();

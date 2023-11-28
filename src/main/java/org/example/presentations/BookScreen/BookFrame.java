@@ -3,6 +3,7 @@ package org.example.presentations.BookScreen;
 import org.example.common.constants.StringConstants;
 import org.example.models.*;
 import org.example.presentations.AuthorScreen.AuthorScreen;
+import org.example.presentations.WarningDialog;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -242,7 +243,7 @@ public class BookFrame {
         if(indexSelected == null){
             JOptionPane.showMessageDialog(bookPanel, StringConstants.idEmpty);
         }else{
-            int ok = warningDialog(StringConstants.questionDelete);
+            int ok = WarningDialog.warningDialog(StringConstants.questionDelete);
             if(ok == 0){
                 int id = books.get(indexSelected).getIDBook();
                 boolean isSuccess = controller.removeBook(id);
@@ -256,23 +257,6 @@ public class BookFrame {
         }
     }
 
-    private int warningDialog(String message) {
-        int confirm;
-        Object[] options = { "Confirm", "Cancel" };
-        int answer = JOptionPane.showOptionDialog(null, message, "Alert",
-                JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
-                null, options, options[0]);
-        switch (answer) {
-            case 0:
-                confirm = 0;
-                break;
-            case 1:
-            default:
-                confirm = 1;
-                break;
-        }
-        return confirm;
-    }
 
     ///TODO: ADD
     private void addBook(){
@@ -354,6 +338,6 @@ public class BookFrame {
     ///TODO:REMOVE ALL
 
     private void removeAll(){
-        warningDialog(StringConstants.questionAllDelete);
+        WarningDialog.warningDialog(StringConstants.questionAllDelete);
     }
 }

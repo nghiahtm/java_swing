@@ -1,5 +1,7 @@
 package org.example.presentations.PublisherScreen;
+import org.example.common.constants.StringConstants;
 import org.example.models.PublisherModel;
+import org.example.presentations.WarningDialog;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -17,6 +19,11 @@ public class PublisherForm {
     private JButton editButton;
     private JButton removeButton;
     private JTable tblPublishers;
+    private JTextField fieldSearch;
+    private JButton searchButton;
+
+    private String keyword = "";
+    private DefaultTableModel model;
 
     private List<PublisherModel> publishers;
     private PublisherModel publisherSelected;
@@ -28,25 +35,82 @@ public class PublisherForm {
         addButton.addActionListener(e -> addPublisher ());
         editButton.addActionListener(e -> editPublisher());
         removeButton.addActionListener(e -> removePublisher());
+        searchButton.addActionListener(e -> searchPublisher());
         fieldID.setEditable(false);
     }
 
     private void removePublisher() {
+        String id = fieldID.getText();
+        if(id.isEmpty()){
+            JOptionPane.showMessageDialog(publisherPanel, StringConstants.idPublisherNotEmpty);
+            return;
+        }
+        int ok = WarningDialog.warningDialog(StringConstants.questionDelete);
+        if(ok == 0){
+            int idPublisher = Integer.parseInt(id);
+            String showMessage = controller.removePublisher(idPublisher);
+            if(showMessage.equals(StringConstants.idPublisherExistInBook)){
+                JOptionPane.showMessageDialog(publisherPanel, StringConstants.idPublisherExistInBook);
+                return;
+            }
+            if(showMessage.equals(StringConstants.connectError)){
+                JOptionPane.showMessageDialog(publisherPanel, StringConstants.connectError);
+                return;
+            }
+                reloadPublisher();
+
+        }
     }
 
     private void editPublisher() {
+        String id = fieldID.getText();
+        if(id.isEmpty()){
+            JOptionPane.showMessageDialog(publisherPanel, StringConstants.idPublisherNotEmpty);
+            return;
+        }
+        if(fieldPublisher.getText().isEmpty()){
+            JOptionPane.showMessageDialog(publisherPanel, StringConstants.publisherNameEmpty);
+            return;
+        }
 
+        PublisherModel addPublisher = new PublisherModel(
+                Integer.parseInt(id), fieldPublisher.getText()
+        );
+        boolean isSuccess = controller.isEditPublisher(addPublisher);
+        if(!isSuccess){
+            JOptionPane.showMessageDialog(publisherPanel, StringConstants.connectError);
+        }
+        reloadPublisher();
     }
 
     private void addPublisher() {
+        if(!fieldID.getText().isEmpty()){
+            JOptionPane.showMessageDialog(publisherPanel, StringConstants.idPublisherEmpty);
+            return;
+        }
+        if(fieldPublisher.getText().isEmpty()){
+            JOptionPane.showMessageDialog(publisherPanel, StringConstants.publisherNameEmpty);
+            return;
+        }
+        PublisherModel addPublisher = new PublisherModel(
+                null, fieldPublisher.getText()
+        );
+        boolean isSuccess = controller.isAddPublisher(addPublisher);
+        if(!isSuccess){
+            JOptionPane.showMessageDialog(publisherPanel, StringConstants.connectError);
+        }
+        reloadPublisher();
     }
 
     private void reloadPublisher() {
         clearField();
-        setTableData();
+        setTableData("");
     }
 
     private void initState(){
+        publisherSelected = new PublisherModel(
+                null,null
+        );
         publisherPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
         tblPublishers.addMouseListener(new MouseAdapter() {
             @Override
@@ -56,7 +120,7 @@ public class PublisherForm {
             }
         });
         controller = new PublisherController();
-        setTableData();
+        setTableData(keyword);
     }
 
     private void setStateField() {
@@ -66,12 +130,13 @@ public class PublisherForm {
     }
 
     private void clearField() {
+       fieldSearch.setText("");
         fieldPublisher.setText("");
         fieldID.setText("");
     }
 
-    private void setTableData() {
-        DefaultTableModel model = new DefaultTableModel() {
+    private void setTableData(String keyword) {
+        model = new DefaultTableModel() {
             final String[] headerBook =
                     {"ID","Publisher"};
 
@@ -89,7 +154,7 @@ public class PublisherForm {
                 return false;
             }
         };
-        publishers = controller.getPublishers();
+        publishers = controller.getPublishers(keyword);
         for (final PublisherModel publisher : publishers) {
             model.addRow(new Object[]{
                     publisher.id,
@@ -97,5 +162,10 @@ public class PublisherForm {
             });
         }
         tblPublishers.setModel(model);
+    }
+
+    void searchPublisher(){
+        keyword = fieldSearch.getText();
+        setTableData(keyword);
     }
 }
