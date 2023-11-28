@@ -3,6 +3,8 @@ package org.example.presentations.BookScreen;
 import org.example.common.constants.StringConstants;
 import org.example.models.*;
 import org.example.presentations.AuthorScreen.AuthorScreen;
+import org.example.presentations.GenreScreen.GenreScreen;
+import org.example.presentations.PublisherScreen.PublisherScreen;
 import org.example.presentations.WarningDialog;
 
 import javax.swing.*;
@@ -10,11 +12,14 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.NumberFormatter;
+import java.awt.*;
 import java.awt.event.*;
 import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
+
+import static org.example.config.ISBNGenerator.generateISBN;
 
 public class BookFrame {
     private JButton removeButton;
@@ -24,7 +29,7 @@ public class BookFrame {
     public JPanel bookPanel;
     private JScrollPane scrollBook;
     private JComboBox<String> cbGenre;
-    private JButton button1;
+    private JButton btnGenre;
     private JButton btnAuthor;
     private JTextArea jTextTitle;
     private JButton btnAdd;
@@ -37,8 +42,12 @@ public class BookFrame {
     private JButton scanINSBButton;
     private JLabel insbCode;
     private JLabel idBook;
-    private JTextField insbField;
+    private JTextField isbnField;
     private JComboBox <String>cbPublisher;
+    private JTextField fieldSearch;
+    private JButton btnSearch;
+    private JButton btnPublisher;
+    private JButton btnGenerator;
     //TODO: Create State
     final private BookController controller;
     private List<DetailBookModel> books;
@@ -53,7 +62,54 @@ public class BookFrame {
         controller = new BookController();
         initState();
         btnDeleteAll.addActionListener(e -> removeAll());
-        btnAuthor.addActionListener(e -> new AuthorScreen().setVisible(true));
+        btnAuthor.addActionListener(e -> {
+            Frame frame = new AuthorScreen();
+            if (frame.getParent() == null) {
+                btnAuthor.setEnabled(false);
+                frame.setVisible(true);
+                frame.addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowClosing(WindowEvent windowEvent) {
+                        btnAuthor.setEnabled(true);
+                    }
+                });
+            }
+        });
+        btnSearch.addActionListener(e -> search());
+        btnGenre.addActionListener(e -> {
+            Frame frame = new GenreScreen();
+            if (frame.getParent() == null) {
+                btnGenre.setEnabled(false);
+                frame.setVisible(true);
+                frame.addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowClosing(WindowEvent windowEvent) {
+                        btnGenre.setEnabled(true);
+                    }
+                });
+            }
+        });
+
+        btnPublisher.addActionListener(e -> {
+            PublisherScreen frame = new PublisherScreen();
+            if (frame.getParent() == null) {
+                btnPublisher.setEnabled(false);
+                frame.setVisible(true);
+                frame.addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowClosing(WindowEvent windowEvent) {
+                        btnPublisher.setEnabled(true);
+                    }
+                });
+            }
+        });
+        btnGenerator.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String isbn = generateISBN();
+                isbnField.setText(isbn);
+            }
+        });
     }
 
     private void initState(){
@@ -71,7 +127,7 @@ public class BookFrame {
         jTextTitle.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         jTextTitle.setLineWrap(true);
         bookPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
-        setTableData();
+        setTableData("");
         //TODO:SET COMBOBOX
         authors = controller.getAuthors();
         for (AuthorModel itemAuthor:authors) {
@@ -156,7 +212,7 @@ public class BookFrame {
     }
 
     ///TODO: Set up Table
-    private void setTableData(){
+    private void setTableData(String keyword){
         DefaultTableModel model = new DefaultTableModel() {
             final String[] headerBook = {"INSB Code","Book Name","Author Name","Publisher","Genre","Title","Selling Price","Publisher Year"};
 
@@ -174,9 +230,8 @@ public class BookFrame {
                 return false; // or a condition at your choice with row and column
             }
         };
-        books = controller.getBooks();
+        books = controller.getBooks(keyword);
         for (final DetailBookModel detailBookModel : books) {
-
             model.addRow(new Object[]{
                     detailBookModel.getInsbCode(),
                     detailBookModel.getName(),
@@ -199,8 +254,9 @@ public class BookFrame {
         idBook.setText(String.valueOf(detailBookModel.getIDBook()));
         jTextTitle.setText(detailBookModel.getBookTitle());
         priceField.setText(String.valueOf(detailBookModel.getSellPricing()));
-        insbField.setText(detailBookModel.getInsbCode());
+        isbnField.setText(detailBookModel.getInsbCode());
         spinnerYearPublisher.setValue(detailBookModel.getYearPublish());
+        isbnField.setEnabled(false);
         for (int i = 0; i < authors.size(); i++) {
             if(authors.get(i).getId().equals(detailBookModel.getAuthorModel().getId())){
                 cbAuthors.setSelectedIndex(i);
@@ -208,13 +264,13 @@ public class BookFrame {
             }
         }
         for (int i = 0; i < publishers.size(); i++) {
-            if(publishers.get(i).id == detailBookModel.getPublisher().id){
+            if(Objects.equals(publishers.get(i).id, detailBookModel.getPublisher().id)){
                 cbPublisher.setSelectedIndex(i);
                 break;
             }
         }
         for (int i = 0; i < genres.size(); i++) {
-            if(genres.get(i).id == detailBookModel.getGenre().id){
+            if(Objects.equals(genres.get(i).id, detailBookModel.getGenre().id)){
                 cbGenre.setSelectedIndex(i);
                 break;
             }
@@ -235,7 +291,10 @@ public class BookFrame {
         priceField.setText(null);
 //        publisherField.setText(null);
         spinnerYearPublisher.setValue(2023);
-        insbField.setText(null);
+        fieldSearch.setText("");
+        isbnField.setText(null);
+        isbnField.setEnabled(true);
+        setTableData("");
     }
 
     ///TODO: REMOVE
@@ -249,7 +308,7 @@ public class BookFrame {
                 boolean isSuccess = controller.removeBook(id);
                 if(isSuccess){
                     clearText();
-                    setTableData();
+                    setTableData("");
                 }else{
                     JOptionPane.showMessageDialog(bookPanel, StringConstants.connectError);
                 }
@@ -260,10 +319,14 @@ public class BookFrame {
 
     ///TODO: ADD
     private void addBook(){
-        String insb = insbField.getText();
+        String insb = isbnField.getText();
         String year = String.valueOf(spinnerYearPublisher.getValue());
         if(!idBook.getText().isEmpty()){
             JOptionPane.showMessageDialog(bookPanel, StringConstants.idAlive);
+            return;
+        }
+        if(insb.isEmpty()){
+            JOptionPane.showMessageDialog(bookPanel, StringConstants.insbEmpty);
             return;
         }
         if (isErrorField(insb,nameField.getText())) return;
@@ -281,7 +344,7 @@ public class BookFrame {
             );
             boolean isSuccess = controller.addBook(newBook);
           if(isSuccess){
-              setTableData();
+              setTableData("");
               clearText();
             }else{
               JOptionPane.showMessageDialog(bookPanel, StringConstants.connectError);
@@ -289,16 +352,16 @@ public class BookFrame {
 
     }
 
-    private boolean isErrorField(String insb,String name) {
+    private boolean isErrorField(String isnb,String name) {
         if (name.isEmpty()) {
             JOptionPane.showMessageDialog(bookPanel, StringConstants.nameBookEmpty);
             return true;
         }
-        if (insb.length()!=13) {
+        if (isnb.length()!=10) {
             JOptionPane.showMessageDialog(bookPanel, StringConstants.insbEmpty);
             return true;
         }
-        if(controller.isINSBExist(insb)){
+        if(controller.isISNBExist(isnb)){
             JOptionPane.showMessageDialog(bookPanel, StringConstants.insbExist);
             return true;
         }
@@ -308,16 +371,15 @@ public class BookFrame {
     ///TODO:EDIT
     private void editBook(){
         String year = String.valueOf(spinnerYearPublisher.getValue());
-        String insb = insbField.getText();
+        String insb = isbnField.getText();
         if(indexSelected == null){
             JOptionPane.showMessageDialog(bookPanel, StringConstants.idEmpty);
             return;
         }
-        if (isErrorField(insb,nameField.getText())) return;
+//        if (isErrorField(insb,nameField.getText())) return;
 
         String title = jTextTitle.getText();
             String price = priceField.getText().isEmpty()? "0": priceField.getText().replace(",","");
-
             BookModel editBook = new BookModel(
                    nameField.getText(),
                     insb, title,
@@ -330,7 +392,7 @@ public class BookFrame {
             );
             boolean isSuccess = controller.editBook(editBook);
             if(isSuccess){
-                setTableData();
+                setTableData("");
                 clearText();
             }
     }
@@ -339,5 +401,9 @@ public class BookFrame {
 
     private void removeAll(){
         WarningDialog.warningDialog(StringConstants.questionAllDelete);
+    }
+
+    private void search(){
+        setTableData(fieldSearch.getText());
     }
 }

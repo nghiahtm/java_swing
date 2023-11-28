@@ -33,7 +33,7 @@ public class ConnectionString {
         Date date;
         try {
             if(resultSet.getDate(attribute) == null){
-                return null;
+                return new Date(1900);
             }else {
                 date = resultSet.getDate(attribute);
                 return new Date(date.getYear(), date.getMonth(), date.getDate());

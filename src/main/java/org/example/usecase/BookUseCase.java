@@ -30,8 +30,8 @@ public class BookUseCase implements IBook {
     }
 
     @Override
-    public List<DetailBookModel> getBooks() {
-        final List<DetailBookModel> books = db.getBook();
+    public List<DetailBookModel> getBooks(String keyword) {
+        final List<DetailBookModel> books = db.getBook(keyword);
         return Objects.requireNonNullElseGet(books, () -> new ArrayList<>(0));
     }
 

@@ -10,7 +10,9 @@
     <children>
       <component id="af5a7" class="javax.swing.JLabel">
         <constraints>
-          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="82" height="17"/>
+          </grid>
         </constraints>
         <properties>
           <text value="ID Author"/>
@@ -26,7 +28,9 @@
       </component>
       <component id="2f792" class="javax.swing.JLabel">
         <constraints>
-          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="82" height="17"/>
+          </grid>
         </constraints>
         <properties>
           <text value="Name"/>
@@ -42,7 +46,9 @@
       </component>
       <component id="34708" class="javax.swing.JLabel">
         <constraints>
-          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="82" height="17"/>
+          </grid>
         </constraints>
         <properties>
           <text value="Date of birth"/>
@@ -50,7 +56,9 @@
       </component>
       <component id="51376" class="javax.swing.JLabel">
         <constraints>
-          <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="82" height="53"/>
+          </grid>
         </constraints>
         <properties>
           <text value="Story"/>
@@ -59,7 +67,7 @@
       <component id="9b194" class="javax.swing.JTextArea" binding="titleField">
         <constraints>
           <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
-            <preferred-size width="150" height="50"/>
+            <preferred-size width="150" height="53"/>
           </grid>
         </constraints>
         <properties/>

@@ -26,8 +26,8 @@ public class BookController {
     }
 
 
-    public List<DetailBookModel> getBooks(){
-        return bookUseCase.getBooks();
+    public List<DetailBookModel> getBooks(String keyword){
+        return bookUseCase.getBooks(keyword);
     }
     public List<AuthorModel> getAuthors(){
         return authorUseCase.getAuthors();
@@ -47,7 +47,7 @@ public class BookController {
     public boolean removeBook(int id) {
         return bookUseCase.removeBook(id);
     }
-    public boolean isINSBExist(String insb) {
+    public boolean isISNBExist(String insb) {
         return bookUseCase.isISNBExist(insb);
     }
 

@@ -17,9 +17,15 @@ public class BookDB {
         return instance;
     }
 
-    public List<DetailBookModel> getBook() {
+    public List<DetailBookModel> getBook(String keyword) {
         List<DetailBookModel> books = new ArrayList<>();
-        String sqlUser = "SELECT * from detail_books";
+        String sqlUser = "";
+        if(keyword.isEmpty()){
+            sqlUser = "SELECT * from detail_books";
+        }else{
+             sqlUser = "SELECT * from detail_books where book_name like '%"+keyword+"%'or insb_code like" +
+                     "'%" +keyword+"%'";
+        }
        try {
            ResultSet rs = ResultDataCommon.getResult(sqlUser);
            while (rs.next()){
